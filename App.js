@@ -1,26 +1,29 @@
 import Slider from '@react-native-community/slider'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, SafeAreaView } from 'react-native'
 import { useState } from 'react'
+import { ModalPassword } from './src/components/modal'
 
 let charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 export default function App() {
-const [size, setSize] = useState(10)
+  const [size, setSize] = useState(10)
+  const [passwordValue, setPasswordValue] = useState("")
+  const [modalVisible, setModalVisible] = useState(false)
 
-function generatePassword() {
+  function generatePassword() {
 
-  let password = ""
+    let password = ""
 
-  for(let i = 0, n = charset.length; i < size; i++){
-    password += charset.charAt(Math.floor(Math.random() * n ))
+    for (let i = 0, n = charset.length; i < size; i++) {
+      password += charset.charAt(Math.floor(Math.random() * n))
+    }
+    setPasswordValue(password)
+    setModalVisible(true)
   }
-
-  console.log(password)
-}
 
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <Image
         source={require('./src/assets/creator-logo.png')}
         style={styles.logo}
@@ -29,25 +32,26 @@ function generatePassword() {
 
       <View style={styles.area}>
         <Slider
-          style={{ height:50 }}
+          style={{ height: 50 }}
           minimumValue={6}
           maximumValue={20}
           maximumTrackTintColor='#ff0000'
           minimumTrackTintColor='#000'
           thumbTintColor='#392de9'
           value={size}
-          onValueChange={ (value) => setSize(value.toFixed(0)) }
+          onValueChange={(value) => setSize(value.toFixed(0))}
         />
-      
+
       </View>
 
       <TouchableOpacity style={styles.button} onPress={generatePassword}>
         <Text style={styles.buttonText}>Gerar senha</Text>
       </TouchableOpacity>
 
+      <Modal visible={modalVisible} animationType='fade' transparent={true}>
+        <ModalPassword password={passwordValue} handleClose={ ()=> setModalVisible(false) } />
+      </Modal>
     </View>
-    
-
   )
 }
 
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3F3FF",
     justifyContent: 'center', //alinhamento vertical
-    alignItems: 'center' //alinhamento horizontal
+    alignItems: 'center', //alinhamento horizontal,
   },
   logo: {
     marginBottom: 60,
